@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Nuevo cheque{% endblock %}
+{% block content %}
+<h1>Nuevo cheque</h1>
+<form method="post" class="form">
+  <label>Fecha de emisión
+    <input type="date" name="fecha_emision" required>
+  </label>
+  <label>Fecha de vencimiento
+    <input type="date" name="fecha_vencimiento" required>
+  </label>
+  <label>Monto
+    <input type="number" name="monto" step="0.01" min="0" required>
+  </label>
+  <label>Número de cheque
+    <input type="text" name="numero_ch" required>
+  </label>
+  <label>Cuenta
+    <input type="text" name="cuenta" required>
+  </label>
+  <label>Beneficiario
+    <input type="text" name="beneficiario" required>
+  </label>
+  <label>Concepto
+    <input type="text" name="concepto">
+  </label>
+  <label>Observaciones
+    <textarea name="observaciones" rows="3"></textarea>
+  </label>
+  <button type="submit" class="btn btn-primary btn-block">Guardar cheque</button>
+</form>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Cheques Lanzados{% endblock %}
+{% block content %}
+<h1>Cheques Lanzados</h1>
+
+<form method="get" class="filters" id="filters-form">
+  <div id="filter-rows"></div>
+  <div class="filter-actions">
+    <button type="button" id="add-filter" class="btn btn-secondary">+ Agregar filtro</button>
+    <div class="combine-toggle">
+      <label><input type="radio" name="combine" value="AND" {% if combine == 'AND' %}checked{% endif %}> Y (AND)</label>
+      <label><input type="radio" name="combine" value="OR" {% if combine == 'OR' %}checked{% endif %}> O (OR)</label>
+    </div>
+  </div>
+  <div class="filter-submit">
+    <button type="submit" class="btn btn-primary">Aplicar filtros</button>
+    <a href="{{ url_for('index') }}" class="btn btn-link">Limpiar</a>
+  </div>
+</form>
+
+<script id="field-labels" type="application/json">{{ field_labels | tojson }}</script>
+<script id="field-types" type="application/json">{{ field_types | tojson }}</script>
+<script id="initial-filters" type="application/json">{{ filter_rows | tojson }}</script>
+
+<p class="summary">{{ cheques|length }} cheque(s) · Pendiente de pago: {{ "{:,.0f}".format(total_pendiente).replace(",", ".") }}</p>
+
+<div class="cheque-list">
+  {% for c in cheques %}
+  <div class="cheque-card {% if c.vencido %}vencido{% elif c.pagado %}pagado{% endif %}">
+    <div class="cheque-header">
+      <span class="cheque-numero">Ch. {{ c.numero_ch }}</span>
+      <span class="cheque-monto">{{ "{:,.0f}".format(c.monto).replace(",", ".") }}</span>
+    </div>
+    <div class="cheque-body">
+      <div><strong>Cuenta:</strong> {{ c.cuenta }}</div>
+      <div><strong>Beneficiario:</strong> {{ c.beneficiario }}</div>
+      {% if c.concepto %}<div><strong>Concepto:</strong> {{ c.concepto }}</div>{% endif %}
+      <div><strong>Emisión:</strong> {{ c.fecha_emision }}</div>
+      <div><strong>Vencimiento:</strong> {{ c.fecha_vencimiento }}</div>
+      <div><strong>Días:</strong> {{ c.dias }}{% if c.vencido %} (vencido){% endif %}</div>
+      <div><strong>Estado:</strong> {% if c.pagado %}Pagado el {{ c.fecha_pago }}{% else %}Pendiente{% endif %}</div>
+      {% if c.observaciones %}<div class="obs"><strong>Obs:</strong> {{ c.observaciones }}</div>{% endif %}
+    </div>
+    <div class="cheque-actions">
+      {% if not c.pagado %}
+      <form method="post" action="{{ url_for('marcar_pagado', cheque_id=c.id) }}">
+        <button type="submit" class="btn btn-primary">Marcar pagado</button>
+      </form>
+      {% endif %}
+      <form method="post" action="{{ url_for('eliminar', cheque_id=c.id) }}" onsubmit="return confirm('¿Eliminar este cheque?');">
+        <button type="submit" class="btn btn-danger">Eliminar</button>
+      </form>
+    </div>
+  </div>
+  {% else %}
+  <p class="empty">No hay cheques que coincidan con los filtros.</p>
+  {% endfor %}
+</div>
+
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+{% endblock %}
