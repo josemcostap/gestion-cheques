@@ -5,7 +5,10 @@ import secrets
 import sqlite3
 from datetime import date
 
+from dotenv import load_dotenv
 from flask import Flask, Response, g, redirect, render_template, request, session, url_for
+
+load_dotenv()
 
 DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "instance", "cheques.db")
 

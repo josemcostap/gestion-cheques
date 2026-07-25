@@ -2,13 +2,16 @@
 
 App web mobile-first para cargar y controlar cheques lanzados, con filtros combinables en AND u OR.
 
-## Setup
+## Setup (una sola vez)
 
 ```bash
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
+cp .env.example .env
 ```
+
+Editá el archivo `.env` y completá `APP_PASSWORD` con una clave a elección. Sin esa clave, la app no pide login (queda abierta a quien tenga la URL).
 
 ## Ejecutar
 
@@ -16,7 +19,7 @@ pip install -r requirements.txt
 python app.py
 ```
 
-Abrí http://localhost:5050 en el navegador (o desde el celular usando la IP de la compu en la misma red). Podés cambiar el puerto con la variable `PORT`.
+Abrí http://localhost:5050 en el navegador. La clave de `.env` se lee sola en cada arranque, no hace falta exportarla a mano. Podés cambiar el puerto editando `PORT` en el `.env`.
 
 ## Funcionalidad
 
@@ -25,34 +28,35 @@ Abrí http://localhost:5050 en el navegador (o desde el celular usando la IP de 
 - **Exportar**: CSV, Excel y PDF de exactamente lo que está filtrado en pantalla.
 - **Base de datos**: SQLite local (`instance/cheques.db`), se crea sola en el primer arranque.
 
+## Acceder desde el celular en la misma wifi
+
+Con la app corriendo, abrí `http://<IP-de-tu-Mac>:5050` desde el navegador del celular. Para ver la IP: `ipconfig getifaddr en0` en otra terminal de la Mac.
+
 ## Acceder desde afuera de tu red (sin desplegar a la nube)
 
-Para entrar desde el celular sin estar en la misma wifi que la Mac, usá un túnel de Cloudflare, que expone tu app local con una URL pública temporal, sin necesidad de crear cuenta.
+Para entrar desde el celular sin estar en la misma wifi que la Mac, usá un túnel de Cloudflare: expone tu app local con una URL pública temporal, sin necesidad de crear cuenta.
 
-### 1. Protegé la app con contraseña
-
-Antes de exponerla a internet, seteá una contraseña (si no la seteás, cualquiera con la URL entra sin login):
-
-```bash
-export APP_PASSWORD="elegí-una-clave"
-python app.py
-```
-
-### 2. Instalá cloudflared (una sola vez)
+### 1. Instalá cloudflared (una sola vez)
 
 ```bash
 brew install cloudflared
 ```
 
-### 3. Abrí el túnel (con la app ya corriendo en otra terminal)
+### 2. Corré la app (con `APP_PASSWORD` ya configurada en `.env`, ver arriba)
+
+```bash
+python app.py
+```
+
+### 3. En otra terminal, abrí el túnel
 
 ```bash
 cloudflared tunnel --url http://localhost:5050
 ```
 
-Te va a imprimir una URL tipo `https://algo-random.trycloudflare.com`. Abrila desde el celular (Safari o Chrome), vas a ver la pantalla de login: ingresá la contraseña que configuraste.
+Te va a imprimir una URL tipo `https://algo-random.trycloudflare.com`. Abrila desde el celular (Safari o Chrome): vas a ver la pantalla de login, ingresá la contraseña de tu `.env`.
 
 **Importante:**
-- El túnel solo funciona mientras la Mac esté prendida, con `python app.py` y `cloudflared` corriendo.
+- El túnel solo funciona mientras la Mac esté prendida, con `python app.py` y `cloudflared` corriendo a la vez.
 - La URL cambia cada vez que reiniciás `cloudflared` (es un túnel temporal/gratuito).
 - No compartas esa URL con nadie: aunque es difícil de adivinar, cualquiera que la tenga puede intentar loguearse.
