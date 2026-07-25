@@ -110,6 +110,16 @@ h1 { font-size: 1.3rem; margin: 0.5rem 0 1rem; }
 
 .summary { font-size: 0.85rem; color: #555; margin: 0.5rem 0; }
 
+.export-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.export-label { font-size: 0.85rem; color: #555; margin-right: 0.25rem; }
+.export-actions .btn { padding: 0.4rem 0.8rem; font-size: 0.85rem; }
+
 .cheque-list { display: flex; flex-direction: column; gap: 0.75rem; }
 .cheque-card {
   background: var(--card-bg);

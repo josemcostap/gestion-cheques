@@ -24,6 +24,13 @@
 
 <p class="summary">{{ cheques|length }} cheque(s) · Pendiente de pago: {{ "{:,.0f}".format(total_pendiente).replace(",", ".") }}</p>
 
+<div class="export-actions">
+  <span class="export-label">Exportar lo filtrado:</span>
+  <a class="btn btn-secondary" href="{{ url_for('exportar', formato='csv') }}?{{ request.query_string.decode() }}">CSV</a>
+  <a class="btn btn-secondary" href="{{ url_for('exportar', formato='xlsx') }}?{{ request.query_string.decode() }}">Excel</a>
+  <a class="btn btn-secondary" href="{{ url_for('exportar', formato='pdf') }}?{{ request.query_string.decode() }}">PDF</a>
+</div>
+
 <div class="cheque-list">
   {% for c in cheques %}
   <div class="cheque-card {% if c.vencido %}vencido{% elif c.pagado %}pagado{% endif %}">
