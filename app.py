@@ -253,7 +253,19 @@ def nuevo():
         )
         db.commit()
         return redirect(url_for("index"))
-    return render_template("nuevo.html")
+
+    db = get_db()
+    cuentas = [r[0] for r in db.execute("SELECT DISTINCT cuenta FROM cheques ORDER BY cuenta")]
+    beneficiarios = [r[0] for r in db.execute("SELECT DISTINCT beneficiario FROM cheques ORDER BY beneficiario")]
+    conceptos = [
+        r[0]
+        for r in db.execute(
+            "SELECT DISTINCT concepto FROM cheques WHERE concepto != '' ORDER BY concepto"
+        )
+    ]
+    return render_template(
+        "nuevo.html", cuentas=cuentas, beneficiarios=beneficiarios, conceptos=conceptos
+    )
 
 
 @app.route("/cheque/<int:cheque_id>/pagar", methods=["POST"])

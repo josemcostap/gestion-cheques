@@ -16,13 +16,22 @@
     <input type="text" name="numero_ch" required>
   </label>
   <label>Cuenta
-    <input type="text" name="cuenta" required>
+    <input type="text" name="cuenta" list="cuentas-list" autocomplete="off" required>
+    <datalist id="cuentas-list">
+      {% for c in cuentas %}<option value="{{ c }}">{% endfor %}
+    </datalist>
   </label>
   <label>Beneficiario
-    <input type="text" name="beneficiario" required>
+    <input type="text" name="beneficiario" list="beneficiarios-list" autocomplete="off" required>
+    <datalist id="beneficiarios-list">
+      {% for b in beneficiarios %}<option value="{{ b }}">{% endfor %}
+    </datalist>
   </label>
   <label>Concepto
-    <input type="text" name="concepto">
+    <input type="text" name="concepto" list="conceptos-list" autocomplete="off">
+    <datalist id="conceptos-list">
+      {% for c in conceptos %}<option value="{{ c }}">{% endfor %}
+    </datalist>
   </label>
   <label>Observaciones
     <textarea name="observaciones" rows="3"></textarea>
