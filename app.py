@@ -32,7 +32,9 @@ def require_login():
 def login():
     error = None
     if request.method == "POST":
-        if secrets.compare_digest(request.form.get("password", ""), APP_PASSWORD):
+        submitted = request.form.get("password", "").encode("utf-8")
+        expected = APP_PASSWORD.encode("utf-8")
+        if secrets.compare_digest(submitted, expected):
             session["authenticated"] = True
             return redirect(request.args.get("next") or url_for("index"))
         error = "Contraseña incorrecta"
