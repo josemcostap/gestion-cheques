@@ -1,14 +1,51 @@
 import csv
 import io
 import os
+import secrets
 import sqlite3
 from datetime import date
 
-from flask import Flask, Response, g, redirect, render_template, request, url_for
+from flask import Flask, Response, g, redirect, render_template, request, session, url_for
 
 DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "instance", "cheques.db")
 
 app = Flask(__name__)
+app.secret_key = os.environ.get("SECRET_KEY", secrets.token_hex(32))
+
+APP_PASSWORD = os.environ.get("APP_PASSWORD")
+
+
+@app.before_request
+def require_login():
+    if not APP_PASSWORD:
+        return
+    if request.endpoint in ("login", "static"):
+        return
+    if not session.get("authenticated"):
+        return redirect(url_for("login", next=request.path))
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    error = None
+    if request.method == "POST":
+        if secrets.compare_digest(request.form.get("password", ""), APP_PASSWORD):
+            session["authenticated"] = True
+            return redirect(request.args.get("next") or url_for("index"))
+        error = "Contraseña incorrecta"
+    return render_template("login.html", error=error)
+
+
+@app.route("/logout")
+def logout():
+    session.pop("authenticated", None)
+    return redirect(url_for("login"))
+
+
+@app.context_processor
+def inject_auth_flag():
+    return {"login_enabled": bool(APP_PASSWORD)}
+
 
 EXPORT_COLUMNS = [
     ("numero_ch", "N° Cheque"),

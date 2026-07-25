@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ingresar - Cheques Lanzados</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<main class="container login-container">
+  <h1>Cheques Lanzados</h1>
+  <form method="post" class="form">
+    {% if error %}<p class="login-error">{{ error }}</p>{% endif %}
+    <label>Contraseña
+      <input type="password" name="password" autofocus required>
+    </label>
+    <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
+  </form>
+</main>
+</body>
+</html>

@@ -9,7 +9,12 @@
 <body>
 <header class="topbar">
   <a href="{{ url_for('index') }}" class="brand">Cheques Lanzados</a>
-  <a href="{{ url_for('nuevo') }}" class="btn btn-primary btn-new">+ Nuevo</a>
+  <div class="topbar-actions">
+    <a href="{{ url_for('nuevo') }}" class="btn btn-primary btn-new">+ Nuevo</a>
+    {% if login_enabled %}
+    <a href="{{ url_for('logout') }}" class="btn btn-link">Salir</a>
+    {% endif %}
+  </div>
 </header>
 <main class="container">
   {% block content %}{% endblock %}
